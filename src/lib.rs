@@ -9,9 +9,10 @@ use std::env::VarError;
 
 pub const YUPDATES_API_TOKEN: &str = "YUPDATES_API_TOKEN";
 pub const YUPDATES_API_URL: &str = "YUPDATES_API_URL";
+pub const YUPDATES_DEFAULT_API_URL: &str = "https://feeds.yupdates.com/api/v0/";
 pub const X_AUTH_TOKEN_HEADER: &str = "X-Auth-Token";
 
-/// During the preview, there is no default URL yet and the environment variable is required.
+/// Retrieve the API URL from the environment or use the default.
 ///
 /// You can override by bypassing the default setup methods. You can instantiate your own
 /// `AsyncYupdatesClient` or use the functions in the `api` module directly.
@@ -25,20 +26,16 @@ pub fn env_or_default_url() -> Result<String> {
             }
         }
         Err(e) => {
-            let err = match e {
+            match e {
                 VarError::NotPresent => {
-                    format!(
-                        "sorry, during the preview you need to set {}",
-                        YUPDATES_API_URL
-                    )
+                    Ok(YUPDATES_DEFAULT_API_URL.to_string())
                 }
                 VarError::NotUnicode(_) => {
-                    format!("{} is not valid unicode", YUPDATES_API_URL)
+                    Err(Error {
+                        kind: Kind::Config(format!("{} is not valid unicode", YUPDATES_API_URL)),
+                    })
                 }
-            };
-            Err(Error {
-                kind: Kind::Config(err),
-            })
+            }
         }
     }
 }
@@ -56,7 +53,7 @@ pub fn api_token() -> Result<String> {
                     format!("API token is missing, set {}", YUPDATES_API_TOKEN)
                 }
                 VarError::NotUnicode(_) => {
-                    format!("{} is not valid unicode", YUPDATES_API_URL)
+                    format!("{} is not valid unicode", YUPDATES_API_TOKEN)
                 }
             };
             Err(Error {
