@@ -1,3 +1,4 @@
+//! Error and result types
 use reqwest::Error as ReqwestError;
 use serde::{Deserialize, Serialize};
 use serde_json::from_str as json_from_str;
@@ -5,7 +6,7 @@ use std::fmt;
 
 pub type Result<T> = std::result::Result<T, Error>;
 
-#[derive(PartialEq, Clone, Debug, Serialize, Deserialize)]
+#[derive(PartialEq, Eq, Clone, Debug, Serialize, Deserialize)]
 pub struct ApiErrorData {
     pub code: Option<u16>,
     pub error: Option<String>,
@@ -23,6 +24,8 @@ pub enum Kind {
     Deserialization(String),
     DetailedHttpCode(u16, String),
     HttpCode(u16),
+    IllegalParameter(String),
+    IllegalResult(String),
     Reqwest(ReqwestError),
 }
 
@@ -87,6 +90,12 @@ impl fmt::Display for Error {
             }
             Kind::Deserialization(s) => {
                 format!("Problem deserializing the response: {}", s)
+            }
+            Kind::IllegalResult(s) => {
+                format!("Illegal API result: {}", s)
+            }
+            Kind::IllegalParameter(s) => {
+                format!("Illegal parameter: {}", s)
             }
             Kind::Reqwest(e) => {
                 format!("Problem with API call: {}", e)

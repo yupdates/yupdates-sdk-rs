@@ -1,3 +1,5 @@
+extern crate core;
+
 use rand::distributions::Alphanumeric;
 use rand::Rng;
 use std::env;
@@ -5,8 +7,10 @@ use std::env::VarError;
 use yupdates::clients::AsyncYupdatesClient;
 use yupdates::env_or_default_url;
 use yupdates::errors::{Error, Kind, Result};
+use yupdates::models::InputItem;
 
-mod input_items;
+mod test_input_items;
+mod test_read_items;
 
 pub const YUPDATES_TEST_FEED_SPECIFIC_TOKEN: &str = "YUPDATES_TEST_FEED_SPECIFIC_TOKEN";
 pub const YUPDATES_TEST_RO_TOKEN: &str = "YUPDATES_TEST_RO_TOKEN";
@@ -42,6 +46,23 @@ pub fn random_ascii_string(len: usize) -> String {
         .take(len)
         .map(char::from)
         .collect()
+}
+
+pub fn random_test_items(num: usize) -> (Vec<InputItem>, Vec<String>) {
+    let mut input_items = Vec::new();
+    let mut suffixes = Vec::new();
+    for _ in 0..num {
+        let suffix = random_ascii_string(10);
+        let input_item = InputItem {
+            title: format!("title-{}", suffix),
+            content: format!("content-{}", suffix),
+            canonical_url: format!("https://www.example.com/{}", suffix),
+        };
+        suffixes.push(suffix);
+        input_items.push(input_item);
+    }
+    suffixes.reverse();
+    (input_items, suffixes)
 }
 
 fn one_env(description: &str, config: &str) -> Result<String> {
