@@ -18,6 +18,10 @@ async fn read_item_parameters() -> Result<()> {
         let expected_suffix = suffixes.get(i).unwrap();
         assert_eq!(feed_item.title, format!("title-{}", expected_suffix));
         assert_eq!(feed_item.content, None);
+        // Files are only present when content is requested:
+        if let Some(files) = &feed_item.associated_files {
+            assert!(files.is_empty());
+        }
     }
 
     // With content:
@@ -36,6 +40,19 @@ async fn read_item_parameters() -> Result<()> {
             feed_item.content,
             Some(format!("content-{}", expected_suffix))
         );
+        if i % 2 == 0 {
+            if let Some(files) = &feed_item.associated_files {
+                assert!(files.is_empty());
+            }
+        } else {
+            assert!(feed_item.associated_files.is_some());
+            let files = feed_item.associated_files.as_ref().unwrap();
+            assert_eq!(files.len(), 1);
+            assert_eq!(
+                files[0].url,
+                format!("https://www.example.com/file-{}", expected_suffix)
+            )
+        }
     }
 
     // Read all of the ones we just added. We can test more queries/bounds in the future with

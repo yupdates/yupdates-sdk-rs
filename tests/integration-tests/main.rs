@@ -7,7 +7,7 @@ use std::env::VarError;
 use yupdates::clients::AsyncYupdatesClient;
 use yupdates::env_or_default_url;
 use yupdates::errors::{Error, Kind, Result};
-use yupdates::models::InputItem;
+use yupdates::models::{AssociatedFile, InputItem};
 
 mod test_input_items;
 mod test_read_items;
@@ -51,12 +51,22 @@ pub fn random_ascii_string(len: usize) -> String {
 pub fn random_test_items(num: usize) -> (Vec<InputItem>, Vec<String>) {
     let mut input_items = Vec::new();
     let mut suffixes = Vec::new();
-    for _ in 0..num {
+    for i in 0..num {
         let suffix = random_ascii_string(10);
+        let associated_files = if i % 2 == 0 {
+            None
+        } else {
+            Some(vec![AssociatedFile {
+                url: format!("https://www.example.com/file-{}", suffix),
+                length: 1234,
+                type_str: "audio/mpeg".to_string(),
+            }])
+        };
         let input_item = InputItem {
             title: format!("title-{}", suffix),
             content: format!("content-{}", suffix),
             canonical_url: format!("https://www.example.com/{}", suffix),
+            associated_files,
         };
         suffixes.push(suffix);
         input_items.push(input_item);

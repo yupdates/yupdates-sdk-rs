@@ -72,7 +72,7 @@ fn main() -> Result<(), Error> {
 }
 ```
 
-There are more examples in the tests and code documentation. You can see the [tests on GitHub](https://github.com/yupdates/yupdates-sdk-rs/tree/main/tests/integration-tests), and see the [code documentation on crates.io](https://docs.rs/yupdates/latest/yupdates/).
+There are more examples in the tests and code documentation. You can see the [tests on GitHub](https://github.com/yupdates/yupdates-sdk-rs/tree/main/tests/integration-tests), and see the [code documentation on docs.rs](https://docs.rs/yupdates/latest/yupdates/).
 
 ### Getting help
 

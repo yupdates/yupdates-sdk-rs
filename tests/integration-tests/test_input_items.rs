@@ -27,6 +27,10 @@ async fn basic_add_items() -> Result<()> {
         let expected_suffix = suffixes.get(idx).unwrap();
         assert_eq!(feed_item.title, format!("title-{}", expected_suffix));
         assert_eq!(feed_item.content, None);
+        // Files are only present when content is requested:
+        if let Some(files) = &feed_item.associated_files {
+            assert!(files.is_empty());
+        }
     }
 
     Ok(())

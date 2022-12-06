@@ -46,9 +46,6 @@
 //! }
 //! ```
 //!
-//!
-//!
-//!
 //! See the [README](https://github.com/yupdates/yupdates-sdk-rs/blob/main/README.md).
 //! The SDK is distributed under the MIT license, see [LICENSE](https://github.com/yupdates/yupdates-sdk-rs/blob/main/LICENSE).
 
